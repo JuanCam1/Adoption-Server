@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model State {
+  id    Int    @id @default(autoincrement())
+  state String @unique @default("Activo")
+  user  User[] @relation("StateUser")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  phone     String
+  address   String
+  location  String
+  picture   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stateId Int
+  state   State @relation("StateUser", fields: [stateId], references: [id])
+
+  sessions Sesion[] @relation("SesionUsuario")
+  role     Role     @default(USER_ROLE)
+
+  Pet                  Pet[]             @relation("UserPet")
+  Adoption             Adoption[]        @relation("AdoptionUser")
+  Conversation         Conversation[]    @relation("StartedConversations")
+  ReceivedConversation Conversation[]    @relation("ReceivedConversations")
+  SentMessages         Message[]         @relation("SentMessages")
+  ReceivedMessages     Message[]         @relation("ReceivedMessages")
+  Post                 Post[]            @relation("UserPost")
+  Comment              Comment[]         @relation("UserComment")
+  AdoptionBy           AdoptionHistory[] @relation("AdoptionHistoryUser")
+  AdoptionFrom         AdoptionHistory[] @relation("AdoptionSource")
+
+  UserRated    UserRating[] @relation("UserRated")
+  UserWhoRated UserRating[] @relation("UserWhoRated")
+
+  @@index([name])
+}
+
+model Pet {
+  id          Int       @id @default(autoincrement())
+  name        String
+  genderId    Int
+  picture     String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  breed       String
+  state       StatePet  @default(AVAILABLE)
+  location    String
+  latitude    Float
+  longitude   Float
+  typeId      Int
+  type        TypePet   @relation("TypePet", fields: [typeId], references: [id])
+  age         String
+  gender      GenderPet @relation("GenderPet", fields: [genderId], references: [id])
+  user        Int
+  User        User?     @relation("UserPet", fields: [user], references: [id])
+
+  Adoption   Adoption[]        @relation("AdoptionPet")
+  AdoptionBy AdoptionHistory[] @relation("AdoptionHistoryPet")
+}
+
+model TypePet {
+  id   Int    @id @default(autoincrement())
+  type String @unique
+  pet  Pet[]  @relation("TypePet")
+}
+
+model GenderPet {
+  id     Int    @id @default(autoincrement())
+  gender String @unique
+  pet    Pet[]  @relation("GenderPet")
+}
+
+model Adoption {
+  id        Int           @id @default(autoincrement())
+  petId     Int
+  pet       Pet           @relation("AdoptionPet", fields: [petId], references: [id])
+  userId    Int
+  user      User          @relation("AdoptionUser", fields: [userId], references: [id])
+  estado    StateAdoption @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Conversation {
+  id        Int       @id @default(autoincrement())
+  user1     User      @relation("StartedConversations", fields: [user1Id], references: [id])
+  user1Id   Int
+  user2     User      @relation("ReceivedConversations", fields: [user2Id], references: [id])
+  user2Id   Int
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([user1Id, user2Id]) // Prevent duplicate conversations between same users
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  content        String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  senderId       Int
+  receiver       User         @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  receiverId     Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId Int
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  title     String
+  content   String
+  imageUrl  String?
+  author    User      @relation("UserPost", fields: [authorId], references: [id])
+  authorId  Int
+  comments  Comment[] @relation("PostComment")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  author    User     @relation("UserComment", fields: [authorId], references: [id])
+  authorId  Int
+  post      Post     @relation("PostComment", fields: [postId], references: [id])
+  postId    Int
+  createdAt DateTime @default(now())
+}
+
+model AdoptionHistory {
+  id           Int      @id @default(autoincrement())
+  petId        Int
+  pet          Pet      @relation("AdoptionHistoryPet", fields: [petId], references: [id])
+  adoptedBy    User     @relation("AdoptionHistoryUser", fields: [userId], references: [id])
+  userId       Int
+  adoptedFrom  User     @relation("AdoptionSource", fields: [sourceUserId], references: [id])
+  sourceUserId Int
+  adoptedAt    DateTime @default(now())
+}
+
+model Sesion {
+  id           String  @id @default(cuid())
+  token        String? @unique
+  date_created String
+  time_created String
+  userId       Int
+  user         User    @relation("SesionUsuario", fields: [userId], references: [id])
+}
+
+model UserRating {
+  id          Int      @id @default(autoincrement())
+  ratedUser   User     @relation("UserRated", fields: [ratedUserId], references: [id])
+  ratedUserId Int
+  ratedBy     User     @relation("UserWhoRated", fields: [ratedById], references: [id])
+  ratedById   Int
+  score       Int
+  comment     String?
+  createdAt   DateTime @default(now())
+
+  @@unique([ratedUserId, ratedById])
+}
+
+enum Role {
+  USER_ROLE
+  ADMIN_ROLE
+}
+
+enum StateAdoption {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum StatePet {
+  AVAILABLE
+  ADOPTED
+  IN_PROCESS
+}
+
+model Setting {
+  id          Int    @id @default(autoincrement())
+  version     String
+  name_app    String
+  description String
+}
