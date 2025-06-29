@@ -66,11 +66,12 @@ model Pet {
   latitude    Float
   longitude   Float
   typeId      Int
+  delete      Boolean   @default(false)
   type        TypePet   @relation("TypePet", fields: [typeId], references: [id])
   age         String
   gender      GenderPet @relation("GenderPet", fields: [genderId], references: [id])
-  user        String
-  User        User?     @relation("UserPet", fields: [user], references: [id])
+  userId      String
+  User        User?     @relation("UserPet", fields: [userId], references: [id])
 
   Adoption   Adoption[]        @relation("AdoptionPet")
   AdoptionBy AdoptionHistory[] @relation("AdoptionHistoryPet")

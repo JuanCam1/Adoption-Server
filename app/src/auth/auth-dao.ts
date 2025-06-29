@@ -22,7 +22,6 @@ export const loginDao = async (
     },
   });
 
-  console.log("🟡 userDb", userDb);
 
   if (!userDb) throw new NotFoundError("Datos incorrectos");
 
@@ -69,9 +68,9 @@ export const registerDao = async (
     },
   });
 
-  if (user) throw new Error("User exist");
+  if (user) throw new Error("Usuario existente");
 
-  if (!register.picture) throw new NotFoundError("File");
+  if (!register.picture) throw new NotFoundError("Foto no encontrada");
 
   const passwordHash = await hashPassword(register.password);
   const randomNumber = randomOTP(6);
