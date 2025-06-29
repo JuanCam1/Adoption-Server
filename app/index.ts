@@ -4,6 +4,7 @@ import express, {
   type Request,
   type Response,
 } from "express";
+import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import { defaultData } from "./data";
 import { app, server } from "./lib/socket";
@@ -11,10 +12,18 @@ import router from "./routes/routes";
 import Config from "./util/config";
 
 const PORT = Config.getInstance().get("port");
+const limiter = rateLimit({
+  windowMs: 3 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
+
 app.use(express.json());
 
-app.use(helmet());
 app.use(cors());
+app.use(helmet());
+app.use(limiter);
 
 app.use((req: Request, _: Response, next: NextFunction) => {
   console.log("🏈 Solicitud recibida:", req.method, req.url);
