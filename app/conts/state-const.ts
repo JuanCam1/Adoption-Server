@@ -1,6 +1,6 @@
 export enum StateValue {
-  ACTIVE = "Activo",
-  INACTIVE = "Inactivo",
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
 }
 
 export enum StateNumberValue {

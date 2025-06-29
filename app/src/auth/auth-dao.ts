@@ -22,9 +22,11 @@ export const loginDao = async (
     },
   });
 
+  console.log("🟡 userDb", userDb);
+
   if (!userDb) throw new NotFoundError("Datos incorrectos");
 
-  if (userDb.state.state === StateValue.INACTIVE)
+  if (userDb.state.state === StateValue.INACTIVE || userDb.stateId === StateNumberValue.INACTIVE)
     throw new InactiveUserError("Usuario inactivo");
 
   const isPasswordValid = await comparePassword(
@@ -38,6 +40,7 @@ export const loginDao = async (
     id: userDb.id,
     name: userDb.name,
     email: userDb.email,
+    pathPicture: userDb.pathPicture,
   };
 
   const token = generateToken(payloadData);
@@ -55,18 +58,7 @@ export const loginDao = async (
   };
 };
 
-const saveSession = async (userId: string, token: string) => {
-  const { fecha, hora } = currentDateAndHour(currentDate());
-  await prisma.session.create({
-    data: {
-      userId,
-      type: "token",
-      token,
-      date_created: fecha,
-      time_created: hora,
-    },
-  });
-};
+
 
 export const registerDao = async (
   register: RegisterMulterModelI,
@@ -102,4 +94,18 @@ export const registerDao = async (
   });
 
   return userCreate;
+};
+
+
+const saveSession = async (userId: string, token: string) => {
+  const { fecha, hora } = currentDateAndHour(currentDate());
+  await prisma.session.create({
+    data: {
+      userId,
+      type: "token",
+      token,
+      date_created: fecha,
+      time_created: hora,
+    },
+  });
 };

@@ -5,10 +5,12 @@ import {
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
 import type { Response } from "express";
-import { StatusCodes } from 'http-status-codes';
-import { sendResponse } from "./sendResponse";
+import { StatusCodes } from "http-status-codes";
+import { InactiveUserError } from "../error/inactive-user-error";
 import { NotFoundError } from "../error/not-found-error";
+import { UnauthorizedError } from "../error/un-authorized-error";
 import { ValidationError } from "../error/validate-error";
+import { sendResponse } from "./sendResponse";
 
 export const validateErrorCatch = (res: Response, error: unknown) => {
   console.log("✖️", error);
@@ -18,6 +20,26 @@ export const validateErrorCatch = (res: Response, error: unknown) => {
       res,
       "error",
       StatusCodes.NOT_FOUND,
+      error.message,
+      null,
+    );
+  }
+
+  if (error instanceof InactiveUserError) {
+    return sendResponse(
+      res,
+      "error",
+      StatusCodes.BAD_REQUEST,
+      error.message,
+      null,
+    );
+  }
+
+  if (error instanceof UnauthorizedError) {
+    return sendResponse(
+      res,
+      "error",
+      StatusCodes.UNAUTHORIZED,
       error.message,
       null,
     );
@@ -90,7 +112,6 @@ export const validateErrorCatch = (res: Response, error: unknown) => {
       null,
     );
   }
-
 
   return sendResponse(
     res,

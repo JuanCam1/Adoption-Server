@@ -16,7 +16,7 @@ const limiter = rateLimit({
   windowMs: 3 * 60 * 1000,
   limit: 100,
   standardHeaders: "draft-8",
-  legacyHeaders: false,
+  legacyHeaders: true,
 });
 
 app.use(express.json());

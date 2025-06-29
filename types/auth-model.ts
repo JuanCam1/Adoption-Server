@@ -21,6 +21,7 @@ export interface PayloadModel {
   id: string;
   name: string;
   email: string;
+  pathPicture: string;
 }
 
 export interface ResponseLoginModel {
