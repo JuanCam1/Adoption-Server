@@ -3,8 +3,10 @@ import { PathConst } from "../../conts/path-const";
 import { multerConfig } from "../../lib/multer-config";
 import { idSchema } from "../../middleware/id-middleware";
 import { validationErrors } from "../../middleware/validation-middleware";
+import genderRouter from "./gender/gender-routes";
 import { createPetController, updatePetController } from "./pet-controller";
 import { petSchema } from "./pet-middleware";
+import typeRouter from "./type/type-routes";
 
 const upload = multerConfig(PathConst.destinationPet);
 const petRouter = Router();
@@ -25,5 +27,8 @@ petRouter.put(
   validationErrors,
   updatePetController,
 );
+
+petRouter.use("/gender", genderRouter);
+petRouter.use("/type", typeRouter);
 
 export default petRouter;

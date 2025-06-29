@@ -24,3 +24,4 @@ export interface PetUpdateModel extends PetModel {
 export interface PetUpdateMulterModel extends PetUpdateModel {
   picture: Express.Multer.File | undefined;
 }
+

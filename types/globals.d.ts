@@ -9,6 +9,7 @@ import type { PaginationAllModel } from "./pagination-model";
 import type { PetModel, PetMulterModel, PetUpdateModel, PetUpdateMulterModel } from "./pet-model";
 import type { SendResponseModel } from "./response-model";
 import type { TokenDataModel, TokenPayloadModel } from "./token-model";
+import type { TypeCreatePetModel, TypePetModel } from "./type-pet-model";
 import type { UserModel, UserMulterModel } from "./user-model";
 
 declare global {
@@ -31,5 +32,6 @@ declare global {
   type PetUpdateModelI = PetUpdateModel;
   type PetUpdateMulterModelI = PetUpdateMulterModel;
 
-
+  type TypePetModelI = TypePetModel;
+  type TypeCreatePetModelI = TypeCreatePetModel;
 }
