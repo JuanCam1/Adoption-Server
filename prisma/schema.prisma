@@ -67,6 +67,7 @@ model Pet {
   longitude   Float
   typeId      Int
   delete      Boolean   @default(false)
+  Post        Post[]    @relation("PostPet")
   type        TypePet   @relation("TypePet", fields: [typeId], references: [id])
   age         String
   gender      GenderPet @relation("GenderPet", fields: [genderId], references: [id])
@@ -135,6 +136,8 @@ model Post {
   content     String
   author      User          @relation("UserPost", fields: [authorId], references: [id])
   authorId    String
+  pet         Pet           @relation("PostPet", fields: [petId], references: [id])
+  petId       String
   comments    Comment[]     @relation("PostComment")
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
