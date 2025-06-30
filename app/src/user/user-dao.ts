@@ -1,12 +1,17 @@
+import path from "node:path";
 import type { User } from "../../../prisma/generated/prisma/client";
+import { PathConst } from "../../conts/path-const";
 import { StateNumberValue, StateValue } from "../../conts/state-const";
 import { NotFoundError } from "../../error/not-found-error";
 import { capitalizeText } from "../../lib/capitalize";
 import { currentDate } from "../../lib/current-date-hour";
 import { prisma } from "../../lib/prisma";
+import { sharpFile } from "../../lib/sharp";
 import { deleteImage } from "../../util/delete-image";
 
-export const updateUserDao = async (user: UserMulterModelI): Promise<Omit<User, "password" | "codeOTP">> => {
+export const updateUserDao = async (
+  user: UserMulterModelI,
+): Promise<Omit<User, "password" | "codeOTP">> => {
   const currentNow = currentDate();
   const userDb = await prisma.user.findUnique({
     where: {
@@ -20,12 +25,18 @@ export const updateUserDao = async (user: UserMulterModelI): Promise<Omit<User, 
   let filenamePicture = userDb.filenamePicture;
 
   if (user.picture) {
+    deleteImage(user.picture.filename, "pet");
 
-    deleteImage(user.picture.filename, "user");
+    const filename = `pet-${Date.now()}.jpeg`;
+    const pathImage = path.join(
+      process.cwd(),
+      PathConst.destinationUser,
+      filename,
+    );
 
-    pathPicture = user.picture.filename;
+    await sharpFile(user.picture, pathImage);
+    pathPicture = filename;
     filenamePicture = user.picture.originalname;
-
   }
 
   const { password: _, ...userUpdate } = await prisma.user.update({
@@ -43,17 +54,19 @@ export const updateUserDao = async (user: UserMulterModelI): Promise<Omit<User, 
     },
     where: {
       id: user.id,
-    }
+    },
   });
 
   return userUpdate;
 };
 
-export const stateAcountDao = async (id: string, type: StateValue): Promise<User> => {
-  const currentNow = currentDate()
+export const stateAcountDao = async (
+  id: string,
+  type: StateValue,
+): Promise<User> => {
+  const currentNow = currentDate();
   let user: User;
   if (type === StateValue.ACTIVE) {
-
     user = await prisma.user.update({
       where: {
         id: id,
@@ -63,7 +76,6 @@ export const stateAcountDao = async (id: string, type: StateValue): Promise<User
         updatedAt: currentNow,
       },
     });
-
   } else {
     user = await prisma.user.update({
       where: {
@@ -76,4 +88,4 @@ export const stateAcountDao = async (id: string, type: StateValue): Promise<User
     });
   }
   return user;
-}
+};

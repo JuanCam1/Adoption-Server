@@ -1,4 +1,7 @@
+import path from "node:path";
+import sharp from "sharp";
 import type { User } from "../../../prisma/generated/prisma/client";
+import { PathConst } from "../../conts/path-const";
 import { StateNumberValue, StateValue } from "../../conts/state-const";
 import { InactiveUserError } from "../../error/inactive-user-error";
 import { NotFoundError } from "../../error/not-found-error";
@@ -6,6 +9,7 @@ import { UnauthorizedError } from "../../error/un-authorized-error";
 import { capitalizeText } from "../../lib/capitalize";
 import { currentDate, currentDateAndHour } from "../../lib/current-date-hour";
 import { prisma } from "../../lib/prisma";
+import { sharpFile } from "../../lib/sharp";
 import { generateRefreshToken, generateToken } from "../../lib/token";
 import { comparePassword, hashPassword } from "../../util/hash-password";
 import { randomOTP } from "../../util/random-otp";
@@ -22,10 +26,12 @@ export const loginDao = async (
     },
   });
 
-
   if (!userDb) throw new NotFoundError("Datos incorrectos");
 
-  if (userDb.state.state === StateValue.INACTIVE || userDb.stateId === StateNumberValue.INACTIVE)
+  if (
+    userDb.state.state === StateValue.INACTIVE ||
+    userDb.stateId === StateNumberValue.INACTIVE
+  )
     throw new InactiveUserError("Usuario inactivo");
 
   const isPasswordValid = await comparePassword(
@@ -57,8 +63,6 @@ export const loginDao = async (
   };
 };
 
-
-
 export const registerDao = async (
   register: RegisterMulterModelI,
 ): Promise<Omit<User, "password" | "codeOTP">> => {
@@ -75,11 +79,23 @@ export const registerDao = async (
   const passwordHash = await hashPassword(register.password);
   const randomNumber = randomOTP(6);
 
+  const filename = `user-${Date.now()}.jpeg`;
+  const pathPicture = path.join(
+    process.cwd(),
+    PathConst.destinationUser,
+    filename,
+  );
 
-  const { password: _, codeOTP: __, ...userCreate } = await prisma.user.create({
+  await sharpFile(register.picture, pathPicture);
+
+  const {
+    password: _,
+    codeOTP: __,
+    ...userCreate
+  } = await prisma.user.create({
     data: {
       filenamePicture: register.picture.originalname,
-      pathPicture: register.picture.filename,
+      pathPicture: filename,
       name: capitalizeText(register.name),
       email: register.email,
       password: passwordHash,
@@ -88,13 +104,12 @@ export const registerDao = async (
       location: capitalizeText(register.location),
       stateId: StateNumberValue.INACTIVE,
       description: capitalizeText(register.description),
-      codeOTP: randomNumber
+      codeOTP: randomNumber,
     },
   });
 
   return userCreate;
 };
-
 
 const saveSession = async (userId: string, token: string) => {
   const { fecha, hora } = currentDateAndHour(currentDate());

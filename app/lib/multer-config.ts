@@ -18,16 +18,17 @@ const allowedExtensions = [
   ".dmg",
 ];
 
-export const multerConfig = (destination: string) => {
-  const storagePhoto = multer.diskStorage({
-    destination: destination,
-    filename: (_, file, cb) => {
-      // console.log("🟡 Archivo recibido en multer:", file);
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-      const ext = path.extname(file.originalname);
-      cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-    },
-  });
+export const multerConfig = (destination?: string) => {
+  // const storagePhoto = multer.diskStorage({
+  //   destination: destination,
+  //   filename: (_, file, cb) => {
+  //     // console.log("🟡 Archivo recibido en multer:", file);
+  //     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+  //     const ext = path.extname(file.originalname);
+  //     cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+  //   },
+  // });
+  const storagePhoto = multer.memoryStorage();
 
   const upload = multer({
     storage: storagePhoto,

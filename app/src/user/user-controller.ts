@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import type { StateValue } from "../../conts/state-const";
+import { deleteImage } from "../../util/delete-image";
 import { sendResponse } from "../../util/sendResponse";
 import { validateErrorCatch } from "../../util/validateError";
 import { stateAccountService, updateUserService } from "./user-service";
@@ -16,6 +17,7 @@ export const updateUserController = async (req: Request, res: Response) => {
 		const userDb = await updateUserService(userFile);
 		sendResponse(res, "success", StatusCodes.OK, "Update user", userDb);
 	} catch (error) {
+		if (req.file) deleteImage(req.file?.filename, "user");
 		validateErrorCatch(res, error);
 	}
 };
