@@ -18,7 +18,7 @@ export const updateUserController = async (req: Request, res: Response) => {
 		sendResponse(res, "success", StatusCodes.OK, "Update user", userDb);
 	} catch (error) {
 		if (req.file) deleteImage(req.file?.filename, "user");
-		validateErrorCatch(res, error);
+		validateErrorCatch(res, req, error);
 	}
 };
 
@@ -34,6 +34,6 @@ export const stateAcountController = async (req: Request, res: Response) => {
 			user,
 		);
 	} catch (error) {
-		validateErrorCatch(res, error);
+		validateErrorCatch(res, req, error);
 	}
 };

@@ -12,7 +12,7 @@ export const loginController = async (req: Request, res: Response) => {
     const user = await loginService(login);
     sendResponse(res, "success", StatusCodes.OK, "Login exitoso", user);
   } catch (error) {
-    validateErrorCatch(res, error);
+    validateErrorCatch(res, req, error);
   }
 };
 
@@ -26,6 +26,6 @@ export const registerController = async (req: Request, res: Response) => {
     sendResponse(res, "success", StatusCodes.OK, "Registro exitoso", user);
   } catch (error) {
     if (req.file) deleteImage(req.file?.filename, "user");
-    validateErrorCatch(res, error);
+    validateErrorCatch(res, req, error);
   }
 };

@@ -4,16 +4,34 @@ import {
   PrismaClientRustPanicError,
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { InactiveUserError } from "../error/inactive-user-error";
 import { NotFoundError } from "../error/not-found-error";
 import { UnauthorizedError } from "../error/un-authorized-error";
 import { ValidationError } from "../error/validate-error";
+import { currentDate, currentDateAndHour } from "../lib/current-date-hour";
+import { loggerAdmin } from "../lib/logger";
 import { sendResponse } from "./sendResponse";
 
-export const validateErrorCatch = (res: Response, error: unknown) => {
-  console.log("✖️", error);
+export const validateErrorCatch = (
+  res: Response,
+  req: Request,
+  error: unknown,
+) => {
+  const { fecha, hora } = currentDateAndHour(currentDate());
+  const errorMessage =
+    error instanceof Error ? error.message : "Error desconocido";
+
+  loggerAdmin.error(
+    JSON.stringify({
+      fecha,
+      hora,
+      verb: req.method,
+      path: req.baseUrl + req.path,
+      error: errorMessage,
+    }),
+  );
 
   if (error instanceof NotFoundError) {
     return sendResponse(
