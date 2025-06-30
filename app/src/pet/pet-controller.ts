@@ -3,7 +3,7 @@ import { matchedData } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import { sendResponse } from "../../util/sendResponse";
 import { validateErrorCatch } from "../../util/validateError";
-import { createPetService, updatePetService } from "./pet-service";
+import { createPetService, listPetService, updatePetService } from "./pet-service";
 
 export const createPetController = async (req: Request, res: Response) => {
   try {
@@ -30,6 +30,18 @@ export const updatePetController = async (req: Request, res: Response) => {
   }
 };
 
+export const listPetController = async (req: Request, res: Response) => {
+  try {
+    const query = matchedData<PetListModelI>(req);
+    const pets = await listPetService(query);
+    sendResponse(res, "success", StatusCodes.OK, "listPet", pets);
+  } catch (error) {
+    validateErrorCatch(res, error);
+  }
+}
+
+export const listPetByIdUserController = async (req: Request, res: Response) => {
+
+};
 // export const statePetController = async (req: Request, res: Response) => { };
-// export const listPetByIdUserController = async (req: Request, res: Response) => { };
 // export const getPetByIdController = async (req: Request, res: Response) => { };

@@ -25,3 +25,15 @@ export interface PetUpdateMulterModel extends PetUpdateModel {
   picture: Express.Multer.File | undefined;
 }
 
+export interface PetListModel {
+  page: number;
+  limit: number;
+  typeId: number;
+  genderId: number;
+  state: string;
+  location: string;
+  age: string;
+  breed: string;
+  startDate: string;
+  endDate: string;
+}

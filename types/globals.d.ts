@@ -6,7 +6,7 @@ import type {
   ResponseLoginModel,
 } from "./auth-model";
 import type { PaginationAllModel } from "./pagination-model";
-import type { PetModel, PetMulterModel, PetUpdateModel, PetUpdateMulterModel } from "./pet-model";
+import type { PetListModel, PetModel, PetMulterModel, PetUpdateModel, PetUpdateMulterModel } from "./pet-model";
 import type { SendResponseModel } from "./response-model";
 import type { TokenDataModel, TokenPayloadModel } from "./token-model";
 import type { TypeCreatePetModel, TypePetModel } from "./type-pet-model";
@@ -34,4 +34,5 @@ declare global {
 
   type TypePetModelI = TypePetModel;
   type TypeCreatePetModelI = TypeCreatePetModel;
+  type PetListModelI = PetListModel;
 }

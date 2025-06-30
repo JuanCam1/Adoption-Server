@@ -17,7 +17,6 @@ export const validationErrors = (
 			"Error de validación",
 			null,
 		);
-		throw new Error("Error de validación");
 	}
 	next();
 };
