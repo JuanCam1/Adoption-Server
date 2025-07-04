@@ -10,7 +10,7 @@ export interface RegisterModel {
   phone: string;
   address: string;
   location: string;
-  description: string;
+  description: string | null | undefined;
 }
 
 export interface RegisterMulterModel extends RegisterModel {

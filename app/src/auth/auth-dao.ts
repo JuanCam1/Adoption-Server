@@ -1,5 +1,4 @@
 import path from "node:path";
-import sharp from "sharp";
 import type { User } from "../../../prisma/generated/prisma/client";
 import { PathConst } from "../../conts/path-const";
 import { StateNumberValue, StateValue } from "../../conts/state-const";
@@ -103,7 +102,7 @@ export const registerDao = async (
       address: capitalizeText(register.address),
       location: capitalizeText(register.location),
       stateId: StateNumberValue.INACTIVE,
-      description: capitalizeText(register.description),
+      description: register.description ? capitalizeText(register.description) : null,
       codeOTP: randomNumber,
     },
   });
