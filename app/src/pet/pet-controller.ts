@@ -19,9 +19,18 @@ export const createPetController = async (req: Request, res: Response) => {
     const petCreated = await createPetService(petFile);
     sendResponse(res, "success", StatusCodes.OK, "Mascota creada", petCreated);
     loggerInfo("Mascota creada", req, null);
+    return;
   } catch (error) {
-    if (req.file) deleteImage(req.file?.filename, "pet");
-    validateErrorCatch(res, req, error);
+    console.log("Error Catch", error);
+
+    if (req.file?.filename) {
+      deleteImage(req.file.filename, "pet");
+    }
+
+    if (!res.headersSent) {
+      validateErrorCatch(res, req, error);
+      return;
+    }
   }
 };
 
@@ -34,7 +43,13 @@ export const updatePetController = async (req: Request, res: Response) => {
     const petUpdated = await updatePetService(petFile);
     sendResponse(res, "success", StatusCodes.OK, "pet updated", petUpdated);
   } catch (error) {
-    if (req.file) deleteImage(req.file?.filename, "pet");
+    try {
+      if (req.file?.filename) {
+        deleteImage(req.file.filename, "pet");
+      }
+    } catch (imgError) {
+      console.error("Error al eliminar la imagen:", imgError);
+    }
     validateErrorCatch(res, req, error);
   }
 };

@@ -9,6 +9,7 @@ export const validationErrors = (
 	next: NextFunction,
 ) => {
 	const errors = validationResult(req);
+	console.log("validationErrors", errors);
 	if (!errors.isEmpty()) {
 		sendResponse(
 			res,

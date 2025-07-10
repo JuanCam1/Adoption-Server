@@ -34,24 +34,32 @@ export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
 	await sharpFile(petFile.picture, pathImage);
 
 	const dataLocation = await getLatitudAndLongitud(petFile.location);
+	const locationData = dataLocation?.[0];
 
+	const latitude = locationData ? Number(locationData.lat) : 0;
+	const longitude = locationData ? Number(locationData.lon) : 0;
+
+
+	const data = {
+		name: capitalizeText(petFile.name),
+		genderId: Number(petFile.genderId),
+		description: capitalizeText(petFile.description),
+		breed: capitalizeText(petFile.breed),
+		location: capitalizeText(petFile.location),
+		latitude,
+		longitude,
+		typeId: Number(petFile.typeId),
+		age: petFile.age,
+		userId: petFile.userId,
+		filenamePicture: petFile.picture.originalname,
+		pathPicture: filename,
+		createdAt: currentNow,
+		updatedAt: currentNow,
+	}
+
+	console.log("data", data);
 	const petCreated = await prisma.pet.create({
-		data: {
-			name: capitalizeText(petFile.name),
-			genderId: Number(petFile.genderId),
-			description: capitalizeText(petFile.description),
-			breed: capitalizeText(petFile.breed),
-			location: capitalizeText(petFile.location),
-			latitude: dataLocation ? Number(dataLocation.lat) : 0,
-			longitude: dataLocation ? Number(dataLocation.lon) : 0,
-			typeId: Number(petFile.typeId),
-			age: petFile.age,
-			userId: petFile.userId,
-			filenamePicture: petFile.picture.originalname,
-			pathPicture: filename,
-			createdAt: currentNow,
-			updatedAt: currentNow,
-		},
+		data,
 	});
 	return petCreated;
 };
@@ -92,9 +100,9 @@ export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
 
 	if (capitalizeText(petFile.location) !== userDb.location) {
 		const dataLocation = await getLatitudAndLongitud(petFile.location);
-
-		latitude = dataLocation ? Number(dataLocation.lat) : 0;
-		longitude = dataLocation ? Number(dataLocation.lon) : 0;
+		const locationData = dataLocation?.[0];
+		latitude = locationData ? Number(locationData.lat) : 0;
+		longitude = locationData ? Number(locationData.lon) : 0;
 	}
 
 	const petUpdate = await prisma.pet.update({

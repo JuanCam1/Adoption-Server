@@ -4,6 +4,8 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
+		"build": "bun build app/index.ts --outdir dist --target bun",
+		"start": "bun dist/index.js",
 		"format": "biome format --write ./src",
 		"lint": "biome lint --write ./src",
 		"dev": "bun --watch --env-file=.env ./app/index.ts"
