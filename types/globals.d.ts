@@ -1,17 +1,18 @@
 import type {
-	LoginModel,
-	PayloadModel,
-	RegisterModel,
-	RegisterMulterModel,
-	ResponseLoginModel,
+  LoginModel,
+  PayloadModel,
+  RegisterModel,
+  RegisterMulterModel,
+  ResponseLoginModel,
 } from "./auth-model";
 import type { PaginationAllModel } from "./pagination-model";
 import type {
-	PetListModel,
-	PetModel,
-	PetMulterModel,
-	PetUpdateModel,
-	PetUpdateMulterModel,
+  ListPetIdUserModel,
+  PetListModel,
+  PetModel,
+  PetMulterModel,
+  PetUpdateModel,
+  PetUpdateMulterModel,
 } from "./pet-model";
 import type { SendResponseModel } from "./response-model";
 import type { LatitudLongitudModel } from "./services-model";
@@ -20,28 +21,29 @@ import type { TypeCreatePetModel, TypePetModel } from "./type-pet-model";
 import type { UserModel, UserMulterModel } from "./user-model";
 
 declare global {
-	type SendResponseModelI<T> = SendResponseModel<T>;
-	type PaginationAllModelI = PaginationAllModel;
+  type SendResponseModelI<T> = SendResponseModel<T>;
+  type PaginationAllModelI = PaginationAllModel;
 
-	type LoginModelI = LoginModel;
-	type RegisterModelI = RegisterModel;
-	type RegisterMulterModelI = RegisterMulterModel;
-	type PayloadModelI = PayloadModel;
-	type ResponseLoginModelI = ResponseLoginModel;
-	type TokenDataModelI = TokenDataModel;
-	type TokenPayloadModelI = TokenPayloadModel;
+  type LoginModelI = LoginModel;
+  type RegisterModelI = RegisterModel;
+  type RegisterMulterModelI = RegisterMulterModel;
+  type PayloadModelI = PayloadModel;
+  type ResponseLoginModelI = ResponseLoginModel;
+  type TokenDataModelI = TokenDataModel;
+  type TokenPayloadModelI = TokenPayloadModel;
 
-	type UserModelI = UserModel;
-	type UserMulterModelI = UserMulterModel;
+  type UserModelI = UserModel;
+  type UserMulterModelI = UserMulterModel;
 
-	type PetModelI = PetModel;
-	type PetMulterModelI = PetMulterModel;
-	type PetUpdateModelI = PetUpdateModel;
-	type PetUpdateMulterModelI = PetUpdateMulterModel;
+  type PetModelI = PetModel;
+  type PetMulterModelI = PetMulterModel;
+  type PetUpdateModelI = PetUpdateModel;
+  type PetUpdateMulterModelI = PetUpdateMulterModel;
 
-	type TypePetModelI = TypePetModel;
-	type TypeCreatePetModelI = TypeCreatePetModel;
-	type PetListModelI = PetListModel;
+  type TypePetModelI = TypePetModel;
+  type TypeCreatePetModelI = TypeCreatePetModel;
+  type PetListModelI = PetListModel;
+  type PetListIdUserModelI = PetListIdUserModel;
 
-	type LatitudLongitudModelI = LatitudLongitudModel;
+  type LatitudLongitudModelI = LatitudLongitudModel;
 }

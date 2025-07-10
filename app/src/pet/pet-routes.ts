@@ -4,34 +4,46 @@ import { idSchema } from "../../middleware/id-middleware";
 import { validationErrors } from "../../middleware/validation-middleware";
 import genderRouter from "./gender/gender-routes";
 import {
-	createPetController,
-	listPetController,
-	updatePetController,
+  createPetController,
+  listPetByIdUserController,
+  listPetController,
+  updatePetController,
 } from "./pet-controller";
-import { listQueryPetsSchema, petSchema } from "./pet-middleware";
+import {
+  listPetByIdUserSchema,
+  listQueryPetsSchema,
+  petSchema,
+} from "./pet-middleware";
 import typeRouter from "./type/type-routes";
 
 const upload = multerConfig();
 const petRouter = Router();
 
 petRouter.post(
-	"/",
-	upload.single("picture"),
-	petSchema,
-	validationErrors,
-	createPetController,
+  "/",
+  upload.single("picture"),
+  petSchema,
+  validationErrors,
+  createPetController,
 );
 
 petRouter.put(
-	"/",
-	upload.single("picture"),
-	idSchema,
-	petSchema,
-	validationErrors,
-	updatePetController,
+  "/",
+  upload.single("picture"),
+  idSchema,
+  petSchema,
+  validationErrors,
+  updatePetController,
 );
 
 petRouter.get("/", listQueryPetsSchema, validationErrors, listPetController);
+petRouter.get(
+  "/:id",
+  idSchema,
+  listPetByIdUserSchema,
+  validationErrors,
+  listPetByIdUserController,
+);
 
 petRouter.use("/gender", genderRouter);
 petRouter.use("/type", typeRouter);

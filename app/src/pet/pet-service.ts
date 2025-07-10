@@ -1,4 +1,9 @@
-import { createPetDao, listPetDao, updatePetDao } from "./pet-dao";
+import {
+  createPetDao,
+  listPetByIdUserDao,
+  listPetDao,
+  updatePetDao,
+} from "./pet-dao";
 
 export const createPetService = async (petFile: PetMulterModelI) => {
   return await createPetDao(petFile);
@@ -10,4 +15,8 @@ export const updatePetService = async (petFile: PetUpdateMulterModelI) => {
 
 export const listPetService = async (query: PetListModelI) => {
   return await listPetDao(query);
+};
+
+export const listPetByIdUserService = async (query: PetListIdUserModelI) => {
+  return await listPetByIdUserDao(query);
 };
