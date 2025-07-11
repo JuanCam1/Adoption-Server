@@ -8,6 +8,7 @@ import {
   getByIdPetController,
   listPetByIdUserController,
   listPetController,
+  stateChangePetController,
   updatePetController,
 } from "./pet-controller";
 import {
@@ -48,6 +49,13 @@ petRouter.get(
 );
 
 petRouter.get("/by-id/:id", idSchema, validationErrors, getByIdPetController);
+
+petRouter.get(
+  "/state/:id",
+  idSchema,
+  validationErrors,
+  stateChangePetController,
+);
 
 petRouter.use("/gender", genderRouter);
 petRouter.use("/type", typeRouter);

@@ -10,6 +10,7 @@ import {
   getByIdPetService,
   listPetByIdUserService,
   listPetService,
+  stateChangePetService,
   updatePetService,
 } from "./pet-service";
 
@@ -43,7 +44,13 @@ export const updatePetController = async (req: Request, res: Response) => {
     const petFile = { ...pet, picture };
 
     const petUpdated = await updatePetService(petFile);
-    sendResponse(res, "success", StatusCodes.OK, "pet updated", petUpdated);
+    sendResponse(
+      res,
+      "success",
+      StatusCodes.OK,
+      "Mascota actualizada",
+      petUpdated,
+    );
   } catch (error) {
     try {
       if (req.file?.filename) {
@@ -60,7 +67,7 @@ export const listPetController = async (req: Request, res: Response) => {
   try {
     const query = matchedData<PetListModelI>(req);
     const pets = await listPetService(query);
-    sendResponse(res, "success", StatusCodes.OK, "listPet", pets);
+    sendResponse(res, "success", StatusCodes.OK, "Lista mascotas", pets);
   } catch (error) {
     validateErrorCatch(res, req, error);
   }
@@ -73,7 +80,13 @@ export const listPetByIdUserController = async (
   try {
     const query = matchedData<PetListIdUserModelI>(req);
     const pets = await listPetByIdUserService(query);
-    sendResponse(res, "success", StatusCodes.OK, "listPetByIdUser", pets);
+    sendResponse(
+      res,
+      "success",
+      StatusCodes.OK,
+      "Lista mascotas por usuario",
+      pets,
+    );
   } catch (error) {
     validateErrorCatch(res, req, error);
   }
@@ -83,9 +96,18 @@ export const getByIdPetController = async (req: Request, res: Response) => {
   try {
     const { id } = matchedData<{ id: string }>(req);
     const pets = await getByIdPetService(id);
-    sendResponse(res, "success", StatusCodes.OK, "getByIdPet", pets);
+    sendResponse(res, "success", StatusCodes.OK, "Mascota por id", pets);
   } catch (error) {
     validateErrorCatch(res, req, error);
   }
 };
-// export const statePetController = async (req: Request, res: Response) => { };
+
+export const stateChangePetController = async (req: Request, res: Response) => {
+  try {
+    const { id } = matchedData<{ id: string }>(req);
+    const pets = await stateChangePetService(id);
+    sendResponse(res, "success", StatusCodes.OK, "Mascota actualizada", pets);
+  } catch (error) {
+    validateErrorCatch(res, req, error);
+  }
+};

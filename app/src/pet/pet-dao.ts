@@ -231,5 +231,26 @@ export const getByIdPetDao = async (id: string) => {
     },
   });
 
+  if (!pet) throw new NotFoundError("Mascota no existe");
+
   return pet;
+};
+
+export const stateChangePetDao = async (id: string) => {
+  const pet = await prisma.pet.findFirst({
+    where: { id },
+  });
+
+  if (!pet) throw new NotFoundError("Mascota no existe");
+
+  const petUpdate = await prisma.pet.update({
+    data: {
+      delete: !pet.delete,
+    },
+    where: {
+      id,
+    },
+  });
+
+  return petUpdate;
 };

@@ -3,6 +3,7 @@ import {
   getByIdPetDao,
   listPetByIdUserDao,
   listPetDao,
+  stateChangePetDao,
   updatePetDao,
 } from "./pet-dao";
 
@@ -24,4 +25,8 @@ export const listPetByIdUserService = async (query: PetListIdUserModelI) => {
 
 export const getByIdPetService = async (id: string) => {
   return await getByIdPetDao(id);
+};
+
+export const stateChangePetService = async (id: string) => {
+  return await stateChangePetDao(id);
 };
