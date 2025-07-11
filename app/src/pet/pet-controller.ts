@@ -7,6 +7,7 @@ import { sendResponse } from "../../util/sendResponse";
 import { validateErrorCatch } from "../../util/validateError";
 import {
   createPetService,
+  getByIdPetService,
   listPetByIdUserService,
   listPetService,
   updatePetService,
@@ -77,5 +78,14 @@ export const listPetByIdUserController = async (
     validateErrorCatch(res, req, error);
   }
 };
+
+export const getByIdPetController = async (req: Request, res: Response) => {
+  try {
+    const { id } = matchedData<{ id: string }>(req);
+    const pets = await getByIdPetService(id);
+    sendResponse(res, "success", StatusCodes.OK, "getByIdPet", pets);
+  } catch (error) {
+    validateErrorCatch(res, req, error);
+  }
+};
 // export const statePetController = async (req: Request, res: Response) => { };
-// export const getPetByIdController = async (req: Request, res: Response) => { };

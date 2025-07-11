@@ -218,3 +218,18 @@ export const listPetDao = async (query: PetListModelI) => {
     totalPages: Math.ceil(total / limitNum),
   };
 };
+
+export const getByIdPetDao = async (id: string) => {
+  const pet = await prisma.pet.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      type: true,
+      gender: true,
+      User: { select: { id: true, name: true, pathPicture: true } },
+    },
+  });
+
+  return pet;
+};

@@ -1,5 +1,6 @@
 import {
   createPetDao,
+  getByIdPetDao,
   listPetByIdUserDao,
   listPetDao,
   updatePetDao,
@@ -19,4 +20,8 @@ export const listPetService = async (query: PetListModelI) => {
 
 export const listPetByIdUserService = async (query: PetListIdUserModelI) => {
   return await listPetByIdUserDao(query);
+};
+
+export const getByIdPetService = async (id: string) => {
+  return await getByIdPetDao(id);
 };
