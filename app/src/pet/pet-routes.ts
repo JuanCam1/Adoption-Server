@@ -5,6 +5,7 @@ import { validationErrors } from "../../middleware/validation-middleware";
 import genderRouter from "./gender/gender-routes";
 import {
   createPetController,
+  deletePetController,
   getByIdPetController,
   listPetByIdUserController,
   listPetController,
@@ -56,6 +57,8 @@ petRouter.get(
   validationErrors,
   stateChangePetController,
 );
+
+petRouter.delete("/:id", idSchema, validationErrors, deletePetController);
 
 petRouter.use("/gender", genderRouter);
 petRouter.use("/type", typeRouter);

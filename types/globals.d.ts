@@ -7,12 +7,14 @@ import type {
 } from "./auth-model";
 import type { PaginationAllModel } from "./pagination-model";
 import type {
-  ListPetIdUserModel,
   PetListModel,
   PetModel,
   PetMulterModel,
   PetUpdateModel,
   PetUpdateMulterModel,
+  StatePetAdoption,
+  TypeStateNum,
+  TypeStateValue,
 } from "./pet-model";
 import type { SendResponseModel } from "./response-model";
 import type { LatitudLongitudModel } from "./services-model";
@@ -44,6 +46,9 @@ declare global {
   type TypeCreatePetModelI = TypeCreatePetModel;
   type PetListModelI = PetListModel;
   type PetListIdUserModelI = PetListIdUserModel;
+  type StatePetAdoptionI = StatePetAdoption;
+  type TypeStateNumI = TypeStateNum;
+  type TypeStateValueI = TypeStateValue;
 
   type LatitudLongitudModelI = LatitudLongitudModel;
 }

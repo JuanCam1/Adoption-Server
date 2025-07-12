@@ -1,5 +1,6 @@
 import {
   createPetDao,
+  deletePetDao,
   getByIdPetDao,
   listPetByIdUserDao,
   listPetDao,
@@ -29,4 +30,8 @@ export const getByIdPetService = async (id: string) => {
 
 export const stateChangePetService = async (id: string) => {
   return await stateChangePetDao(id);
+};
+
+export const deletePetService = async (id: string) => {
+  return await deletePetDao(id);
 };

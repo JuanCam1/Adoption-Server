@@ -39,3 +39,19 @@ export interface PetListIdUserModel {
   limit: number;
   page: number;
 }
+
+export enum StatePetAdoption {
+  AVAILABLE = "AVAILABLE",
+  ADOPTED = "ADOPTED",
+  IN_PROCESS = "IN_PROCESS",
+}
+
+export enum TypeStateNum {
+  ACTIVE = 1,
+  INACTIVE = 2,
+}
+
+export enum TypeStateValue {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+}

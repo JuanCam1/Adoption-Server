@@ -12,6 +12,7 @@ model State {
   id    Int    @id @default(autoincrement())
   state String @unique @default("Activo")
   user  User[] @relation("StateUser")
+  pet   Pet[]  @relation("StatePet")
 }
 
 model User {
@@ -61,7 +62,7 @@ model Pet {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   breed       String
-  state       StatePet  @default(AVAILABLE)
+  statePet    StatePet  @default(AVAILABLE)
   location    String
   latitude    Float
   longitude   Float
@@ -76,6 +77,9 @@ model Pet {
 
   Adoption   Adoption[]        @relation("AdoptionPet")
   AdoptionBy AdoptionHistory[] @relation("AdoptionHistoryPet")
+
+  stateId Int
+  state   State @relation("StatePet", fields: [stateId], references: [id])
 
   pathPicture     String
   filenamePicture String

@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { Pet } from "../../../prisma/generated/prisma/client";
+import { TypeStateNum } from "../../../types/pet-model";
 import { PathConst } from "../../conts/path-const";
 import { NotFoundError } from "../../error/not-found-error";
 import { capitalizeText } from "../../lib/capitalize";
@@ -39,7 +40,7 @@ export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
   const latitude = locationData ? Number(locationData.lat) : 0;
   const longitude = locationData ? Number(locationData.lon) : 0;
 
-  const data = {
+  const data: Omit<Pet, "id" | "statePet"> = {
     name: capitalizeText(petFile.name),
     genderId: Number(petFile.genderId),
     description: capitalizeText(petFile.description),
@@ -54,6 +55,8 @@ export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
     pathPicture: filename,
     createdAt: currentNow,
     updatedAt: currentNow,
+    delete: false,
+    stateId: 1,
   };
 
   console.log("data", data);
@@ -138,6 +141,7 @@ export const listPetByIdUserDao = async (query: PetListIdUserModelI) => {
     prisma.pet.findMany({
       where: {
         userId: id,
+        delete: false,
       },
       skip,
       take: limitNum,
@@ -223,6 +227,7 @@ export const getByIdPetDao = async (id: string) => {
   const pet = await prisma.pet.findFirst({
     where: {
       id,
+      delete: false,
     },
     include: {
       type: true,
@@ -232,7 +237,6 @@ export const getByIdPetDao = async (id: string) => {
   });
 
   if (!pet) throw new NotFoundError("Mascota no existe");
-
   return pet;
 };
 
@@ -243,9 +247,33 @@ export const stateChangePetDao = async (id: string) => {
 
   if (!pet) throw new NotFoundError("Mascota no existe");
 
+  const stateId =
+    pet.stateId === TypeStateNum.ACTIVE
+      ? TypeStateNum.INACTIVE
+      : TypeStateNum.ACTIVE;
+
   const petUpdate = await prisma.pet.update({
     data: {
-      delete: !pet.delete,
+      stateId,
+    },
+    where: {
+      id,
+    },
+  });
+
+  return petUpdate;
+};
+
+export const deletePetDao = async (id: string) => {
+  const pet = await prisma.pet.findFirst({
+    where: { id },
+  });
+
+  if (!pet) throw new NotFoundError("Mascota no existe");
+
+  const petUpdate = await prisma.pet.update({
+    data: {
+      delete: false,
     },
     where: {
       id,

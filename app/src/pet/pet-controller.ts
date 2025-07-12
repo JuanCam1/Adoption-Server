@@ -7,6 +7,7 @@ import { sendResponse } from "../../util/sendResponse";
 import { validateErrorCatch } from "../../util/validateError";
 import {
   createPetService,
+  deletePetService,
   getByIdPetService,
   listPetByIdUserService,
   listPetService,
@@ -95,8 +96,8 @@ export const listPetByIdUserController = async (
 export const getByIdPetController = async (req: Request, res: Response) => {
   try {
     const { id } = matchedData<{ id: string }>(req);
-    const pets = await getByIdPetService(id);
-    sendResponse(res, "success", StatusCodes.OK, "Mascota por id", pets);
+    const pet = await getByIdPetService(id);
+    sendResponse(res, "success", StatusCodes.OK, "Mascota por id", pet);
   } catch (error) {
     validateErrorCatch(res, req, error);
   }
@@ -105,8 +106,18 @@ export const getByIdPetController = async (req: Request, res: Response) => {
 export const stateChangePetController = async (req: Request, res: Response) => {
   try {
     const { id } = matchedData<{ id: string }>(req);
-    const pets = await stateChangePetService(id);
-    sendResponse(res, "success", StatusCodes.OK, "Mascota actualizada", pets);
+    const pet = await stateChangePetService(id);
+    sendResponse(res, "success", StatusCodes.OK, "Mascota actualizada", pet);
+  } catch (error) {
+    validateErrorCatch(res, req, error);
+  }
+};
+
+export const deletePetController = async (req: Request, res: Response) => {
+  try {
+    const { id } = matchedData<{ id: string }>(req);
+    const pet = await deletePetService(id);
+    sendResponse(res, "success", StatusCodes.OK, "Mascota eliminara", pet);
   } catch (error) {
     validateErrorCatch(res, req, error);
   }
