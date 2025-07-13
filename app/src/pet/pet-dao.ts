@@ -273,7 +273,7 @@ export const deletePetDao = async (id: string) => {
 
   const petUpdate = await prisma.pet.update({
     data: {
-      delete: false,
+      delete: true,
     },
     where: {
       id,
