@@ -22,6 +22,9 @@ import typeRouter from "./type/type-routes";
 const upload = multerConfig();
 const petRouter = Router();
 
+petRouter.use("/gender", genderRouter);
+petRouter.use("/type", typeRouter);
+
 petRouter.post(
   "/",
   upload.single("picture"),
@@ -59,8 +62,5 @@ petRouter.get(
 );
 
 petRouter.delete("/:id", idSchema, validationErrors, deletePetController);
-
-petRouter.use("/gender", genderRouter);
-petRouter.use("/type", typeRouter);
 
 export default petRouter;

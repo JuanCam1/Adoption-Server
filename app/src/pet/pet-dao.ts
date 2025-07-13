@@ -102,21 +102,23 @@ export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
 
   if (capitalizeText(petFile.location) !== userDb.location) {
     const dataLocation = await getLatitudAndLongitud(petFile.location);
+    console.log(dataLocation);
     const locationData = dataLocation?.[0];
     latitude = locationData ? Number(locationData.lat) : 0;
     longitude = locationData ? Number(locationData.lon) : 0;
   }
 
+  console.log(longitude, latitude);
   const petUpdate = await prisma.pet.update({
     data: {
       name: petFile.name,
-      genderId: petFile.genderId,
+      genderId: Number(petFile.genderId),
       description: petFile.description,
       breed: petFile.breed,
       location: petFile.location,
       latitude: latitude,
       longitude: longitude,
-      typeId: petFile.typeId,
+      typeId: Number(petFile.typeId),
       age: petFile.age,
       userId: petFile.userId,
       filenamePicture,

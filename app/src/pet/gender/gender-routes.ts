@@ -1,5 +1,3 @@
-
-
 import { Router } from "express";
 import { listGenderController } from "./gender-controller";
 
