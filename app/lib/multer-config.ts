@@ -22,6 +22,9 @@ export const multerConfig = () => {
 	const storagePhoto = multer.memoryStorage();
 
 	const upload = multer({
+		limits: {
+			fileSize: 5 * 1024 * 1024,
+		},
 		storage: storagePhoto,
 		fileFilter: (_, file, cb) => {
 			const ext = path.extname(file.originalname).toLowerCase();

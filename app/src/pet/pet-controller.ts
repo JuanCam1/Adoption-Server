@@ -2,7 +2,6 @@ import type { Request, Response } from "express";
 import { matchedData } from "express-validator";
 import { StatusCodes } from "http-status-codes";
 import { loggerInfo } from "../../lib/logger";
-import { deleteImage } from "../../util/delete-image";
 import { sendResponse } from "../../util/sendResponse";
 import { validateErrorCatch } from "../../util/validateError";
 import {
@@ -25,16 +24,7 @@ export const createPetController = async (req: Request, res: Response) => {
     loggerInfo("Mascota creada", req, null);
     return;
   } catch (error) {
-    console.log("Error Catch", error);
-
-    if (req.file?.filename) {
-      deleteImage(req.file.filename, "pet");
-    }
-
-    if (!res.headersSent) {
-      validateErrorCatch(res, req, error);
-      return;
-    }
+    validateErrorCatch(res, req, error);
   }
 };
 
@@ -53,13 +43,6 @@ export const updatePetController = async (req: Request, res: Response) => {
       petUpdated,
     );
   } catch (error) {
-    try {
-      if (req.file?.filename) {
-        deleteImage(req.file.filename, "pet");
-      }
-    } catch (imgError) {
-      console.error("Error al eliminar la imagen:", imgError);
-    }
     validateErrorCatch(res, req, error);
   }
 };

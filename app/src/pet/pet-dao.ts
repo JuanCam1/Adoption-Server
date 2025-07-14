@@ -67,11 +67,10 @@ export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
 };
 
 export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
+  console.log("petDap", petFile);
+
   const currentNow = currentDate();
   const userDb = await prisma.user.findUnique({
-    include: {
-      state: true,
-    },
     where: {
       id: petFile.userId,
     },
@@ -79,11 +78,21 @@ export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
 
   if (!userDb) throw new NotFoundError("Usuario no encontrado");
 
-  let pathPicture = userDb.pathPicture;
-  let filenamePicture = userDb.filenamePicture;
+  const petDb = await prisma.pet.findUnique({
+    where: {
+      id: petFile.id,
+    },
+  });
+
+  if (!petDb) throw new NotFoundError("Mascota no encontrada");
+
+  let pathPicture = petDb.pathPicture;
+  let filenamePicture = petDb.filenamePicture;
 
   if (petFile.picture) {
-    deleteImage(petFile.picture.filename, "pet");
+    if (petDb.pathPicture) {
+      deleteImage(petDb.pathPicture, "pet");
+    }
 
     const filename = `pet-${Date.now()}.jpeg`;
     const pathImage = path.join(
@@ -100,7 +109,7 @@ export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
   let longitude = 0;
   let latitude = 0;
 
-  if (capitalizeText(petFile.location) !== userDb.location) {
+  if (capitalizeText(petFile.location) !== petDb.location) {
     const dataLocation = await getLatitudAndLongitud(petFile.location);
     console.log(dataLocation);
     const locationData = dataLocation?.[0];
@@ -111,11 +120,11 @@ export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
   console.log(longitude, latitude);
   const petUpdate = await prisma.pet.update({
     data: {
-      name: petFile.name,
+      name: capitalizeText(petFile.name),
       genderId: Number(petFile.genderId),
-      description: petFile.description,
-      breed: petFile.breed,
-      location: petFile.location,
+      description: capitalizeText(petFile.description),
+      breed: capitalizeText(petFile.breed),
+      location: capitalizeText(petFile.location),
       latitude: latitude,
       longitude: longitude,
       typeId: Number(petFile.typeId),

@@ -22,9 +22,7 @@ const PORT = Config.getInstance().get("port");
 // 	legacyHeaders: true,
 // });
 
-app.use(
-	express.json(),
-);
+app.use(express.json({ limit: "5mb" }));
 
 app.use(cors());
 app.use(helmet());
@@ -37,6 +35,22 @@ app.use((req: Request, _: Response, next: NextFunction) => {
 	console.log("🏈 query", req.query);
 	next();
 });
+
+const errorHandler = (
+	err: any,
+	req: Request,
+	res: Response,
+	next: NextFunction,
+): void => {
+	if (err.status === 413 || err.code === "LIMIT_FILE_SIZE") {
+		res.status(413).json({ message: "El archivo supera el tamaño permitido" });
+	} else {
+		console.error("Error inesperado:", err);
+		res.status(500).json({ message: "Error interno del servidor" });
+	}
+};
+
+app.use(errorHandler);
 
 app.use("/api/v1/", router);
 app.use("/static", express.static("uploads"));
