@@ -18,5 +18,6 @@ export const registerSchema = [
   check("phone").exists().isInt().withMessage("El campo telefono es obligatorio"),
   check("address").exists().notEmpty().withMessage("El campo direccion es obligatorio"),
   check("location").exists().notEmpty().withMessage("El campo ubicacion es obligatorio"),
-  check("description").optional()
+  check("description").optional(),
+  check("picture").exists().withMessage("La foto es obligatoria"),
 ];

@@ -10,7 +10,7 @@ import { sharpFile } from "../../lib/sharp";
 import { getLatitudAndLongitud } from "../../services/pet-services";
 import { deleteImage } from "../../util/delete-image";
 
-export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
+export const createPetDao = async (petFile: PetModelI): Promise<Pet> => {
   const currentNow = currentDate();
   const userDb = await prisma.user.findUnique({
     include: {
@@ -31,8 +31,9 @@ export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
     PathConst.destinationPet,
     filename,
   );
-
-  await sharpFile(petFile.picture, pathImage);
+  const filenamePicture = "profile.jpg";
+  const imageBuffer = Buffer.from(petFile.picture, "base64");
+  await sharpFile(imageBuffer, pathImage);
 
   const dataLocation = await getLatitudAndLongitud(petFile.location);
   const locationData = dataLocation?.[0];
@@ -51,7 +52,7 @@ export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
     typeId: Number(petFile.typeId),
     age: petFile.age,
     userId: petFile.userId,
-    filenamePicture: petFile.picture.originalname,
+    filenamePicture: filenamePicture,
     pathPicture: filename,
     createdAt: currentNow,
     updatedAt: currentNow,
@@ -66,7 +67,7 @@ export const createPetDao = async (petFile: PetMulterModelI): Promise<Pet> => {
   return petCreated;
 };
 
-export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
+export const updatePetDao = async (petFile: PetUpdateModelI) => {
   console.log("petDap", petFile);
 
   const currentNow = currentDate();
@@ -87,23 +88,20 @@ export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
   if (!petDb) throw new NotFoundError("Mascota no encontrada");
 
   let pathPicture = petDb.pathPicture;
-  let filenamePicture = petDb.filenamePicture;
 
-  if (petFile.picture) {
+  if (petFile.picture && typeof petFile.picture === "string") {
     if (petDb.pathPicture) {
       deleteImage(petDb.pathPicture, "pet");
     }
 
     const filename = `pet-${Date.now()}.jpeg`;
-    const pathImage = path.join(
-      process.cwd(),
-      PathConst.destinationPet,
-      filename,
-    );
+    const pathImage = path.join(process.cwd(), PathConst.destinationPet, filename);
 
-    await sharpFile(petFile.picture, pathImage);
+    const imageBuffer = Buffer.from(petFile.picture, "base64");
+
+    await sharpFile(imageBuffer, pathImage);
+
     pathPicture = filename;
-    filenamePicture = petFile.picture.originalname;
   }
 
   let longitude = 0;
@@ -130,7 +128,6 @@ export const updatePetDao = async (petFile: PetUpdateMulterModelI) => {
       typeId: Number(petFile.typeId),
       age: petFile.age,
       userId: petFile.userId,
-      filenamePicture,
       pathPicture,
       updatedAt: currentNow,
     },

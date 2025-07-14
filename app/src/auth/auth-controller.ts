@@ -19,10 +19,7 @@ export const loginController = async (req: Request, res: Response) => {
 export const registerController = async (req: Request, res: Response) => {
   try {
     const register = matchedData<RegisterModelI>(req);
-    const picture = req?.file;
-    const registerFile = { ...register, picture };
-
-    const user = await registerService(registerFile);
+    const user = await registerService(register);
     sendResponse(res, "success", StatusCodes.OK, "Registro exitoso", user);
   } catch (error) {
     if (req.file) deleteImage(req.file?.filename, "user");

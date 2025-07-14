@@ -17,9 +17,7 @@ import {
 export const createPetController = async (req: Request, res: Response) => {
   try {
     const pet = matchedData<PetModelI>(req);
-    const picture = req?.file;
-    const petFile = { ...pet, picture };
-    const petCreated = await createPetService(petFile);
+    const petCreated = await createPetService(pet);
     sendResponse(res, "success", StatusCodes.OK, "Mascota creada", petCreated);
     loggerInfo("Mascota creada", req, null);
     return;
@@ -31,10 +29,8 @@ export const createPetController = async (req: Request, res: Response) => {
 export const updatePetController = async (req: Request, res: Response) => {
   try {
     const pet = matchedData<PetUpdateModelI>(req);
-    const picture = req?.file;
-    const petFile = { ...pet, picture };
 
-    const petUpdated = await updatePetService(petFile);
+    const petUpdated = await updatePetService(pet);
     sendResponse(
       res,
       "success",

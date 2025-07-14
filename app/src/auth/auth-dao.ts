@@ -63,7 +63,7 @@ export const loginDao = async (
 };
 
 export const registerDao = async (
-  register: RegisterMulterModelI,
+  register: RegisterModelI,
 ): Promise<Omit<User, "password" | "codeOTP">> => {
   const user = await prisma.user.findUnique({
     where: {
@@ -78,6 +78,7 @@ export const registerDao = async (
   const passwordHash = await hashPassword(register.password);
   const randomNumber = randomOTP(6);
 
+  const filenamePicture = "profile.jpg";
   const filename = `user-${Date.now()}.jpeg`;
   const pathPicture = path.join(
     process.cwd(),
@@ -85,7 +86,8 @@ export const registerDao = async (
     filename,
   );
 
-  await sharpFile(register.picture, pathPicture);
+  const imageBuffer = Buffer.from(register.picture, "base64");
+  await sharpFile(imageBuffer, pathPicture);
 
   const {
     password: _,
@@ -93,7 +95,7 @@ export const registerDao = async (
     ...userCreate
   } = await prisma.user.create({
     data: {
-      filenamePicture: register.picture.originalname,
+      filenamePicture: filenamePicture,
       pathPicture: filename,
       name: capitalizeText(register.name),
       email: register.email,

@@ -7,18 +7,11 @@ export interface PetModel {
   age: string;
   breed: string;
   userId: string;
-}
-
-export interface PetMulterModel extends PetModel {
-  picture: Express.Multer.File | undefined;
+  picture: string
 }
 
 export interface PetUpdateModel extends PetModel {
   id: string;
-}
-
-export interface PetUpdateMulterModel extends PetUpdateModel {
-  picture: Express.Multer.File | undefined;
 }
 
 export interface PetListModel {

@@ -10,7 +10,7 @@ import { sharpFile } from "../../lib/sharp";
 import { deleteImage } from "../../util/delete-image";
 
 export const updateUserDao = async (
-  user: UserMulterModelI,
+  user: UserModelI,
 ): Promise<Omit<User, "password" | "codeOTP">> => {
   const currentNow = currentDate();
   const userDb = await prisma.user.findUnique({
@@ -22,27 +22,26 @@ export const updateUserDao = async (
   if (!userDb) throw new NotFoundError("Datos incorrectos");
 
   let pathPicture = userDb.pathPicture;
-  let filenamePicture = userDb.filenamePicture;
 
-  if (user.picture) {
-    deleteImage(user.picture.filename, "pet");
 
-    const filename = `pet-${Date.now()}.jpeg`;
-    const pathImage = path.join(
-      process.cwd(),
-      PathConst.destinationUser,
-      filename,
-    );
+  if (user.picture && typeof user.picture === "string") {
+    if (userDb.pathPicture) {
+      deleteImage(userDb.pathPicture, "user");
+    }
 
-    await sharpFile(user.picture, pathImage);
+    const filename = `user-${Date.now()}.jpeg`;
+    const pathImage = path.join(process.cwd(), PathConst.destinationUser, filename);
+
+    const imageBuffer = Buffer.from(user.picture, "base64");
+
+    await sharpFile(imageBuffer, pathImage);
+
     pathPicture = filename;
-    filenamePicture = user.picture.originalname;
   }
 
   const { password: _, ...userUpdate } = await prisma.user.update({
     data: {
       id: user.id,
-      filenamePicture,
       pathPicture,
       name: capitalizeText(user.name),
       email: user.email,

@@ -7,8 +7,5 @@ export interface UserModel {
   address: string;
   location: string;
   description: string;
-}
-
-export interface UserMulterModel extends UserModel {
-  picture: Express.Multer.File | undefined;
+  picture: string;
 }

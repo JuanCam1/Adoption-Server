@@ -8,11 +8,11 @@ import {
   updatePetDao,
 } from "./pet-dao";
 
-export const createPetService = async (petFile: PetMulterModelI) => {
+export const createPetService = async (petFile: PetModelI) => {
   return await createPetDao(petFile);
 };
 
-export const updatePetService = async (petFile: PetUpdateMulterModelI) => {
+export const updatePetService = async (petFile: PetUpdateModelI) => {
   return await updatePetDao(petFile);
 };
 

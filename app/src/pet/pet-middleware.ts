@@ -14,6 +14,7 @@ export const petSchema = [
   check("typeId").exists().isInt().withMessage("El campo tipo es obligatorio"),
   check("age").exists().withMessage("El campo edad es obligatorio"),
   check("userId").exists().withMessage("El campo usuario es obligatorio"),
+  check("picture").exists().withMessage("El campo usuario es obligatorio"),
 ];
 
 export const listQueryPetsSchema = [

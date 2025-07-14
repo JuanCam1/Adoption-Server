@@ -30,7 +30,7 @@ petRouter.post(
 
 petRouter.post(
 	"/:id",
-	upload.single("picture"),
+	// upload.single("picture"),
 	idSchema,
 	petSchema,
 	validationErrors,

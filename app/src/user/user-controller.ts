@@ -10,11 +10,7 @@ import { stateAccountService, updateUserService } from "./user-service";
 export const updateUserController = async (req: Request, res: Response) => {
 	try {
 		const user = matchedData<UserModelI>(req);
-		const picture = req?.file;
-
-		const userFile = { ...user, picture };
-
-		const userDb = await updateUserService(userFile);
+		const userDb = await updateUserService(user);
 		sendResponse(res, "success", StatusCodes.OK, "Update user", userDb);
 	} catch (error) {
 		if (req.file) deleteImage(req.file?.filename, "user");

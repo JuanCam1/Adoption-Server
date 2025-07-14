@@ -11,11 +11,9 @@ export interface RegisterModel {
   address: string;
   location: string;
   description: string | null | undefined;
+  picture: string;
 }
 
-export interface RegisterMulterModel extends RegisterModel {
-  picture: Express.Multer.File | undefined;
-}
 
 export interface PayloadModel {
   id: string;

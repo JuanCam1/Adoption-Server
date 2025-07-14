@@ -4,7 +4,7 @@ import {
   updateUserDao
 } from "./user-dao";
 
-export const updateUserService = async (user: UserMulterModelI) => {
+export const updateUserService = async (user: UserModelI) => {
   return await updateUserDao(user);
 };
 
